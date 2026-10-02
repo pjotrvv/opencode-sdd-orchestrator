@@ -31,6 +31,11 @@ plan, `/speckit.analyze` after tasks.
 
 ## Derive the stage
 
+If the request names a stage explicitly - specify, plan, tasks, implement,
+converge, clarify, checklist, analyze, or constitution - run that stage: the
+user's instruction wins over the derived stage. A stage whose prerequisite
+artifact is missing runs that prerequisite first.
+
 Feature first, stop at the first match:
 
 1. `.specify/` missing → Bootstrap.
@@ -54,7 +59,12 @@ Stage, given the feature directory, stop at the first match:
 
 **Prose gate (humanizer).** When a stage writes or edits prose - `spec.md`,
 `plan.md`, constitution, README, docs - load the `humanizer` skill and rewrite
-those files before reporting the stage done.
+those files before reporting the stage done. The gate reaches the surfaces
+where AI prose leaks hardest: run commit messages, PR titles and bodies, and
+the summary you report to the user through humanizer before writing or
+sending them. After rewriting `spec.md` or `plan.md`, offer
+`/speckit.analyze` - a prose pass over a spec-kit template can break
+cross-artifact consistency, and analyze is the command that checks it.
 
 **Code gate (ponytail).** Before converge runs, load the `ponytail-review`
 skill and work through its findings on the current diff. Fix what it flags,
@@ -79,7 +89,8 @@ acting.
 ## Rules
 
 - One stage per run: run it, report its verdict, name the next stage, stop. The
-  implement → converge loop is the exception; it runs until `Converged`.
+  implement → converge loop is the exception: report after every cycle, and
+  after 3 cycles without `Converged`, stop and report what is still open.
 - Never edit spec-kit-managed files (`.opencode/commands/speckit.*.md`,
   `.specify/templates/`).
 - A change that contradicts an earlier artifact updates the owning artifact
