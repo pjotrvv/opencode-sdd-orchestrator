@@ -1,0 +1,3 @@
+# This repo's product lives in .opencode/, so re-include it here even when a
+# machine-wide git ignore excludes .opencode/ as per-developer agent config.
+!.opencode/
