@@ -43,7 +43,7 @@ Run these in the project where you want SDD.
 **1. spec-kit** (the pipeline):
 
 ```sh
-uv tool install specify-cli
+uv tool install specify-cli    # or: pipx install specify-cli
 ```
 
 **2. Gates:**
