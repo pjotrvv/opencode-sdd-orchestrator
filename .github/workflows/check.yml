@@ -1,0 +1,14 @@
+name: check
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      # Pin actions/checkout to a full commit SHA if you want repo-strict pinning.
+      - uses: actions/checkout@v4
+      - run: python3 scripts/check.py

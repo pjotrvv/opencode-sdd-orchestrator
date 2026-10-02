@@ -1,5 +1,7 @@
 # opencode-sdd-orchestrator
 
+[![check](https://github.com/pjotrvv/opencode-sdd-orchestrator/actions/workflows/check.yml/badge.svg)](https://github.com/pjotrvv/opencode-sdd-orchestrator/actions/workflows/check.yml)
+
 Spec-driven development orchestration for [OpenCode](https://opencode.ai). One
 skill holds the pipeline state machine, one command starts it. The work itself
 stays with the tools it wires together:
@@ -79,6 +81,8 @@ cp -r /tmp/sdd-orch/.opencode/skills/sdd-orchestrator ~/.config/opencode/skills/
 
 - OpenCode v2. No plugin, no runtime, no build step.
 - Missing gates do not stop the pipeline; `/sdd` says what it skipped.
+- CI runs `scripts/check.py` on every push: pack structure, plus every
+  `/speckit.*` name the skill references against spec-kit's live templates.
 
 ## License
 
