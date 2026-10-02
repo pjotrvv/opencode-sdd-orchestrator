@@ -1,6 +1,6 @@
 ---
 name: SDD Orchestrator
-description: Advances spec-kit's spec-driven development pipeline inside OpenCode - derives the current stage from .specify/ artifacts, runs the next /speckit.* command, and applies the humanizer prose gate and ponytail code gate. Use when the user runs /sdd or asks to start, advance, check, or continue a spec-driven feature.
+description: Advances spec-kit's spec-driven development pipeline inside OpenCode - derives the current stage from .specify/ artifacts, decomposes whole-product goals into a confirmed feature list, runs the next /speckit.* command, and applies the humanizer prose gate and ponytail code gate. Use when the user runs /sdd, gives a library/application/website goal to break into specs, or asks to start, advance, check, or continue spec-driven work.
 ---
 
 # SDD Orchestrator
@@ -16,6 +16,7 @@ is there.
 | --- | --- | --- | --- |
 | bootstrap | see Bootstrap | `.specify/` exists | `specify init` finished |
 | constitution | `/speckit.constitution` | `.specify/memory/constitution.md` | file exists |
+| decompose | this skill | proposal in chat, nothing on disk | user says go or edits the list |
 | specify | `/speckit.specify <feature>` | `.specify/specs/<slug>/spec.md` | file exists |
 | plan | `/speckit.plan <tech choices>` | `.../plan.md` | file exists |
 | tasks | `/speckit.tasks` | `.../tasks.md` | file exists |
@@ -41,10 +42,13 @@ Feature first, stop at the first match:
 1. `.specify/` missing → Bootstrap.
 2. `.specify/memory/constitution.md` missing → constitution.
 3. Feature directory: a slug or path named in the request, else the newest
-   directory under `.specify/specs/`. If there is none and the request
-   describes a feature → specify, with the request as its argument. If there
-   is no request either → ask the user what to build, then specify with the
-   answer.
+   directory under `.specify/specs/`. If there is none:
+   - the request describes a whole product, library, or site - several
+     surfaces, formats, or pages → **Decompose**.
+   - the request describes one bounded change that would ship as a single
+     PR → specify, with the request as its argument.
+   - no request → ask the user what to build, then apply these two rules to
+     the answer.
 
 Stage, given the feature directory, stop at the first match:
 
@@ -54,6 +58,27 @@ Stage, given the feature directory, stop at the first match:
 4. `tasks.md` still contains `- [ ]` → implement.
 5. Otherwise → converge. If converge reports `Converged`, the feature is done:
    report it and stop.
+
+## Decompose a goal
+
+Whole-product goal, no feature directory: propose an ordered feature list in
+chat. Nothing is written to disk.
+
+- Slice by the type in the request:
+  - library → one feature per output format or API surface, then packaging,
+    CLI, docs
+  - application → domain core, one feature per user-facing surface, data, ops
+  - website → sections and pages, content model, design system, performance
+- Each line is outcome + boundary. No tech stack, no tasks.
+- Every line must pass its own PR test: shippable and testable on its own.
+  Order by dependency.
+- More than 8 lines means the goal is an epic: propose a first wave of 8 or
+  fewer and say the rest stays queued.
+
+Stop and wait. On go: the accepted lines are the queue - feature 1's line
+becomes the `specify` argument, then plan, then tasks, then stop before
+implement. On edits: revise the list, ask again. When reporting, name the
+next queued line ("next: ..."); the queue advances only when the user asks.
 
 ## Gates
 
@@ -88,9 +113,11 @@ acting.
 
 ## Rules
 
-- One stage per run: run it, report its verdict, name the next stage, stop. The
-  implement → converge loop is the exception: report after every cycle, and
-  after 3 cycles without `Converged`, stop and report what is still open.
+- Stage-per-run: a goal run carries the first queued feature through
+  specify → plan → tasks, then stops before implement. Any other run executes
+  one stage, reports its verdict, names the next stage, stops. The implement →
+  converge loop is the exception: report after every cycle, and after 3 cycles
+  without `Converged`, stop and report what is still open.
 - Never edit spec-kit-managed files (`.opencode/commands/speckit.*.md`,
   `.specify/templates/`).
 - A change that contradicts an earlier artifact updates the owning artifact
@@ -100,4 +127,4 @@ acting.
   stack), ask instead of inventing it.
 - Slugs, paths, and file names come from `.specify/`; never invent them.
 
-<!-- ponytail: prompt-driven sequencing - the stage is re-derived from .specify/ on each run, nothing enforces it and nothing chains turns. Upgrade path: an OpenCode plugin (tool.execute.before plus experimental.chat.system.transform hooks) if you need to block edits before a spec exists or drive implement -> converge without the user re-invoking /sdd. -->
+<!-- ponytail: prompt-driven sequencing - the stage is re-derived from .specify/ on each run, nothing enforces it and nothing chains turns. The decompose queue lives in the conversation plus the feature dirs under .specify/specs/; ordering does not survive a session. Upgrade paths: .specify/roadmap.md for a durable queue, or an OpenCode plugin (tool.execute.before plus experimental.chat.system.transform hooks) if you need to block edits before a spec exists or chain implement -> converge without the user re-invoking /sdd. -->
