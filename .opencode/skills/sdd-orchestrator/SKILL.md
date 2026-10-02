@@ -43,10 +43,11 @@ Feature first, stop at the first match:
 2. `.specify/memory/constitution.md` missing → constitution.
 3. Feature directory: a slug or path named in the request, else the newest
    directory under `.specify/specs/`. If there is none:
-   - the request describes a whole product, library, or site - several
-     surfaces, formats, or pages → **Decompose**.
-   - the request describes one bounded change that would ship as a single
-     PR → specify, with the request as its argument.
+   - the request names a whole deliverable - library, application, website,
+     product, platform, or tool - → **Decompose**. "Build a Discord UI
+     library" is a deliverable, not a slice; it still decomposes.
+   - the request names one bounded change (add, fix, extend, support) that
+     would ship as a single PR → specify, with the request as its argument.
    - no request → ask the user what to build, then apply these two rules to
      the answer.
 
@@ -63,6 +64,13 @@ Stage, given the feature directory, stop at the first match:
 
 Whole-product goal, no feature directory: propose an ordered feature list in
 chat. Nothing is written to disk.
+
+Ground the split in the project first: read `README.md` and `ROADMAP.md` at
+the project root when they exist. README gives what the project is -
+surfaces, components, conventions. ROADMAP gives planned work in its own
+order and vocabulary: adopt its ordering, and skip anything
+`.specify/specs/` shows already done. Neither file exists: split from the
+request text alone and say the proposal is ungrounded.
 
 - Slice by the type in the request:
   - library → one feature per output format or API surface, then packaging,

@@ -17,10 +17,11 @@ stays with the tools it wires together:
 One state machine, three ways in. The state is what exists under `.specify/` —
 no state file to go stale:
 
-- **Goal run** — `/sdd Build a Markdown-to-Discord library`: decompose
-  proposes an ordered feature list, you confirm or edit it, then feature 1
-  runs specify → plan → tasks and stops so you can read the plan before any
-  code exists.
+- **Goal run** — `/sdd Build a Markdown-to-Discord library`: decompose reads
+  `README.md` and `ROADMAP.md` when they exist, proposes an ordered feature
+  list grounded in them, you confirm or edit it, then feature 1 runs
+  specify → plan → tasks and stops so you can read the plan before any code
+  exists.
 - **Bounded run** — `/sdd Add CSV export to the orders page`: one PR-sized
   change, skips decomposition, same pipeline.
 - **Advance** — `/sdd`: derives the current stage from the artifacts, runs
